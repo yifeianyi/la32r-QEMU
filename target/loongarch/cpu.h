@@ -13,6 +13,8 @@
 #include "hw/registerfields.h"
 #include "cpu-csr.h"
 #include "qemu/timer.h"
+#include "exec/memory.h"
+#include "hw/sysbus.h"
 
 #define TCG_GUEST_DEFAULT_MO (0)
 
@@ -253,6 +255,7 @@ struct CPULoongArchState {
 
     AddressSpace address_space_iocsr;
     MemoryRegion system_iocsr;
+    MemoryRegion iocsr_mem;
 #endif
 };
 
