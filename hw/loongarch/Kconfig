@@ -21,3 +21,6 @@ config LOONGARCH_VIRT
 
 config FW_CFG_LOONGARCH
     bool
+
+config LOONGARCH32
+    bool

@@ -22,6 +22,8 @@ int loongarch_cpu_gdb_read_register(CPUState *cs, GByteArray *mem_buf, int n)
         return gdb_get_regl(mem_buf, env->gpr[n]);
     } else if (n == 32) {
         return gdb_get_regl(mem_buf, env->pc);
+    } else if (n == 33) {
+        return gdb_get_regl(mem_buf, env->badaddr);
     }
     return 0;
 }
@@ -68,8 +70,13 @@ static int loongarch_gdb_set_fpu(CPULoongArchState *env,
 
 void loongarch_cpu_register_gdb_regs_for_features(CPUState *cs)
 {
+#ifdef TARGET_LOONGARCH32
+    gdb_register_coprocessor(cs, loongarch_gdb_get_fpu, loongarch_gdb_set_fpu,
+                             41, "loongarch-fpu32.xml", 0);
+#else
     gdb_register_coprocessor(cs, loongarch_gdb_get_fpu, loongarch_gdb_set_fpu,
                              41, "loongarch-fpu64.xml", 0);
+#endif
 }
 
 int loongarch_read_qxfer(CPUState *cs, const char *annex, uint8_t *read_buf,

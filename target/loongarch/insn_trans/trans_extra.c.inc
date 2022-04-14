@@ -33,6 +33,8 @@ static bool trans_asrtgt_d(DisasContext *ctx, arg_asrtgt_d * a)
     return true;
 }
 
+
+#if !defined(TARGET_LOONGARCH32)
 #ifndef CONFIG_USER_ONLY
 static bool gen_rdtime(DisasContext *ctx, arg_rr *a,
                        bool word, bool high)
@@ -47,7 +49,7 @@ static bool gen_rdtime(DisasContext *ctx, arg_rr *a,
     if (word) {
         tcg_gen_sextract_tl(dst1, dst1, high ? 32 : 0, 32);
     }
-    tcg_gen_ld_i64(dst2, cpu_env, offsetof(CPULoongArchState, CSR_TID));
+    tcg_gen_ld_tl(dst2, cpu_env, offsetof(CPULoongArchState, CSR_TID));
 
     return true;
 }
@@ -69,7 +71,12 @@ static bool trans_rdtimeh_w(DisasContext *ctx, arg_rdtimeh_w *a)
     tcg_gen_movi_tl(cpu_gpr[a->rd], 0);
     return true;
 #else
+#ifdef TARGET_LOONGARCH32
+    return gen_rdtime(ctx, a, 1, 0);
+#else
     return gen_rdtime(ctx, a, 1, 1);
+#endif
+
 #endif
 }
 
@@ -82,6 +89,59 @@ static bool trans_rdtime_d(DisasContext *ctx, arg_rdtime_d *a)
     return gen_rdtime(ctx, a, 0, 0);
 #endif
 }
+
+#else /* TARGET_LOONGARCH32 */
+#ifndef CONFIG_USER_ONLY
+static bool gen_rdtime(DisasContext *ctx, arg_rr *a,
+                        int high)
+{
+    TCGv dst1 = gpr_dst(ctx, a->rd, EXT_NONE);
+    TCGv dst2 = gpr_dst(ctx, a->rj, EXT_NONE);
+
+    if (tb_cflags(ctx->base.tb) & CF_USE_ICOUNT) {
+        gen_io_start();
+    }
+    if (high) {
+        gen_helper_rdtimeh_w(dst1, cpu_env);
+    } else {
+        gen_helper_rdtimel_w(dst1, cpu_env);
+    }
+    tcg_gen_ld_tl(dst2, cpu_env, offsetof(CPULoongArchState, CSR_TID));
+
+    return true;
+}
+#endif
+static bool trans_rdtimel_w(DisasContext *ctx, arg_rdtimel_w *a)
+{
+#ifdef CONFIG_USER_ONLY
+    tcg_gen_movi_tl(cpu_gpr[a->rd], 0);
+    return true;
+#else
+    return gen_rdtime(ctx, a,  0);
+#endif
+}
+
+static bool trans_rdtimeh_w(DisasContext *ctx, arg_rdtimeh_w *a)
+{
+#ifdef CONFIG_USER_ONLY
+    tcg_gen_movi_tl(cpu_gpr[a->rd], 0);
+    return true;
+#else
+    return gen_rdtime(ctx, a,  1);
+#endif
+}
+
+static bool trans_rdtime_d(DisasContext *ctx, arg_rdtime_d *a)
+{
+#ifdef CONFIG_USER_ONLY
+    tcg_gen_movi_tl(cpu_gpr[a->rd], 0);
+    return true;
+#else
+    return gen_rdtime(ctx, a,  0);
+#endif
+}
+#endif
+
 
 static bool trans_cpucfg(DisasContext *ctx, arg_cpucfg *a)
 {

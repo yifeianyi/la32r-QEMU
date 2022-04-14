@@ -351,7 +351,6 @@ static bool trans_cacop(DisasContext *ctx, arg_cacop *a)
     }
     return true;
 }
-
 static bool trans_ldpte(DisasContext *ctx, arg_ldpte *a)
 {
     TCGv_i32 mem_idx = tcg_constant_i32(ctx->mem_idx);
@@ -376,7 +375,6 @@ static bool trans_lddir(DisasContext *ctx, arg_lddir *a)
     gen_helper_lddir(dest, cpu_env, src, tcg_constant_tl(a->imm), mem_idx);
     return true;
 }
-
 static bool trans_ertn(DisasContext *ctx, arg_ertn *a)
 {
     if (check_plv(ctx)) {

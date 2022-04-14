@@ -12,8 +12,8 @@ DEF_HELPER_FLAGS_1(bitswap, TCG_CALL_NO_RWG_SE, tl, tl)
 DEF_HELPER_FLAGS_3(asrtle_d, TCG_CALL_NO_WG, void, env, tl, tl)
 DEF_HELPER_FLAGS_3(asrtgt_d, TCG_CALL_NO_WG, void, env, tl, tl)
 
-DEF_HELPER_FLAGS_3(crc32, TCG_CALL_NO_RWG_SE, tl, tl, tl, tl)
-DEF_HELPER_FLAGS_3(crc32c, TCG_CALL_NO_RWG_SE, tl, tl, tl, tl)
+DEF_HELPER_FLAGS_3(crc32, TCG_CALL_NO_RWG_SE, tl, tl, tl, i64)
+DEF_HELPER_FLAGS_3(crc32c, TCG_CALL_NO_RWG_SE, tl, tl, tl, i64)
 DEF_HELPER_FLAGS_2(cpucfg, TCG_CALL_NO_RWG_SE, tl, env, tl)
 
 /* Floating-point helper */
@@ -95,9 +95,9 @@ DEF_HELPER_FLAGS_2(set_rounding_mode, TCG_CALL_NO_RWG, void, env, i32)
 
 /*Core functions */
 #ifndef CONFIG_USER_ONLY
-DEF_HELPER_2(csr_rdq, i64, env, i64)
-DEF_HELPER_3(csr_wrq, i64, env, tl, i64)
-DEF_HELPER_4(csr_xchgq, i64, env, tl, tl, i64)
+DEF_HELPER_2(csr_rdq, tl, env, i64)
+DEF_HELPER_3(csr_wrq, tl, env, tl, i64)
+DEF_HELPER_4(csr_xchgq, tl, env, tl, tl, i64)
 DEF_HELPER_3(iocsr_read, i64, env, tl, i32)
 DEF_HELPER_4(iocsr_write, void, env, tl, tl, i32)
 
@@ -117,4 +117,7 @@ DEF_HELPER_4(ldpte, void, env, tl, tl, i32)
 DEF_HELPER_1(ertn, void, env)
 DEF_HELPER_1(idle, void, env)
 DEF_HELPER_1(rdtime_d, i64, env)
+DEF_HELPER_1(rdtimeh_w, i32 , env)
+DEF_HELPER_1(rdtimel_w, i32 , env)
+
 #endif /* !CONFIG_USER_ONLY */

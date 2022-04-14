@@ -18,6 +18,12 @@
 #include "hw/loongarch/loongarch.h"
 #include "tcg/tcg-ldst.h"
 
+#if !defined(TARGET_LOONGARCH32)
+#define VADDR_HIGHEST_SHIFT 63
+#else
+#define VADDR_HIGHEST_SHIFT 31
+#endif
+
 target_ulong helper_csr_rdq(CPULoongArchState *env, uint64_t csr)
 {
     LoongArchCPU *cpu;
@@ -25,13 +31,16 @@ target_ulong helper_csr_rdq(CPULoongArchState *env, uint64_t csr)
 
     switch (csr) {
     case LOONGARCH_CSR_PGD:
+#if defined(TARGET_LOONGARCH32)
+        v = env->CSR_BADV;
+#else
         if (env->CSR_TLBRERA & 0x1) {
             v = env->CSR_TLBRBADV;
         } else {
             v = env->CSR_BADV;
         }
-
-        if ((v >> 63) & 0x1) {
+#endif
+        if ((v >> VADDR_HIGHEST_SHIFT) & 0x1) {
             v = env->CSR_PGDH;
         } else {
             v = env->CSR_PGDL;

@@ -15,6 +15,7 @@
 #pragma GCC poison TARGET_HEXAGON
 #pragma GCC poison TARGET_HPPA
 #pragma GCC poison TARGET_LOONGARCH64
+#pragma GCC poison TARGET_LOONGARCH32
 #pragma GCC poison TARGET_M68K
 #pragma GCC poison TARGET_MICROBLAZE
 #pragma GCC poison TARGET_MIPS

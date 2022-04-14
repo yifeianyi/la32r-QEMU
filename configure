@@ -601,6 +601,8 @@ elif check_define __aarch64__ ; then
   cpu="aarch64"
 elif check_define __loongarch64 ; then
   cpu="loongarch64"
+elif check_define __loongarch32 ; then
+  cpu="loongarch32"
 else
   cpu=$(uname -m)
 fi

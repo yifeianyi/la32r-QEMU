@@ -325,7 +325,8 @@
                    'TARGET_I386',
                    'TARGET_S390X',
                    'TARGET_MIPS',
-                   'TARGET_LOONGARCH64' ] } }
+                   'TARGET_LOONGARCH64',
+                  'TARGET_LOONGARCH32'] } }
 
 ##
 # @query-cpu-definitions:
@@ -342,4 +343,5 @@
                    'TARGET_I386',
                    'TARGET_S390X',
                    'TARGET_MIPS',
-                   'TARGET_LOONGARCH64' ] } }
+                   'TARGET_LOONGARCH64',
+                  'TARGET_LOONGARCH32'] } }

@@ -92,8 +92,19 @@ static void gen_sltu(TCGv dest, TCGv src1, TCGv src2)
 
 static void gen_mulh_w(TCGv dest, TCGv src1, TCGv src2)
 {
-    tcg_gen_mul_i64(dest, src1, src2);
+#ifdef TARGET_LOONGARCH32
+    TCGv_i32 t2 = tcg_temp_new_i32();
+    TCGv_i32 t3 = tcg_temp_new_i32();
+    tcg_gen_trunc_tl_i32(t2, src1);
+    tcg_gen_trunc_tl_i32(t3, src2);
+    tcg_gen_mulu2_i32(t2, t3, t2, t3);
+    tcg_gen_ext_i32_tl(dest, t3);
+    tcg_temp_free_i32(t2);
+    tcg_temp_free_i32(t3);
+#else
+    tcg_gen_mul_tl(dest, src1, src2);
     tcg_gen_sari_i64(dest, dest, 32);
+#endif
 }
 
 static void gen_mulh_d(TCGv dest, TCGv src1, TCGv src2)

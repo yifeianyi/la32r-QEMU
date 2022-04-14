@@ -98,6 +98,21 @@ void helper_ertn(CPULoongArchState *env)
 {
     uint64_t csr_pplv, csr_pie;
     if (FIELD_EX64(env->CSR_TLBRERA, CSR_TLBRERA, ISTLBR)) {
+#ifdef TARGET_LOONGARCH32
+        csr_pplv = FIELD_EX64(env->CSR_PRMD, CSR_PRMD, PPLV);
+        csr_pie = FIELD_EX64(env->CSR_PRMD, CSR_PRMD, PIE);
+        env->pc = env->CSR_ERA;
+        env->CSR_CRMD = FIELD_DP64(env->CSR_CRMD, CSR_CRMD, DA, 0);
+        env->CSR_CRMD = FIELD_DP64(env->CSR_CRMD, CSR_CRMD, PG, 1);
+         qemu_log_mask(CPU_LOG_INT, "%s: TLBRERA 0x%lx\n",
+                         __func__, env->CSR_ERA);
+        env->CSR_TLBRERA = FIELD_DP64(env->CSR_TLBRERA, CSR_TLBRERA, ISTLBR, 0);
+        /*
+         * TODO :
+         * now we use tlbrera to help us refill in la32,
+         * in fact its not
+         */
+#else
         csr_pplv = FIELD_EX64(env->CSR_TLBRPRMD, CSR_TLBRPRMD, PPLV);
         csr_pie = FIELD_EX64(env->CSR_TLBRPRMD, CSR_TLBRPRMD, PIE);
 
@@ -107,6 +122,7 @@ void helper_ertn(CPULoongArchState *env)
         env->pc = env->CSR_TLBRERA;
         qemu_log_mask(CPU_LOG_INT, "%s: TLBRERA 0x%lx\n",
                       __func__, env->CSR_TLBRERA);
+#endif
     } else {
         csr_pplv = FIELD_EX64(env->CSR_PRMD, CSR_PRMD, PPLV);
         csr_pie = FIELD_EX64(env->CSR_PRMD, CSR_PRMD, PIE);
@@ -134,4 +150,17 @@ uint64_t helper_rdtime_d(CPULoongArchState *env)
      LoongArchCPU *cpu = LOONGARCH_CPU(env_cpu(env));
      return cpu_loongarch_get_constant_timer_counter(cpu);
 }
+
+uint32_t helper_rdtimeh_w(CPULoongArchState *env)
+{
+     LoongArchCPU *cpu = LOONGARCH_CPU(env_cpu(env));
+     return (uint32_t) (cpu_loongarch_get_constant_timer_counter(cpu) >> 32);
+}
+
+uint32_t helper_rdtimel_w(CPULoongArchState *env)
+{
+     LoongArchCPU *cpu = LOONGARCH_CPU(env_cpu(env));
+    return (uint32_t) cpu_loongarch_get_constant_timer_counter(cpu);
+}
+
 #endif /* !CONFIG_USER_ONLY */

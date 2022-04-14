@@ -78,11 +78,28 @@ FIELD(CSR_ESTAT, ESUBCODE, 22, 9)
 
 #define LOONGARCH_CSR_EENTRY         0xc /* Exception entry address */
 
+
 /* TLB related CSRs */
+
 #define LOONGARCH_CSR_TLBIDX         0x10 /* TLB Index, EHINV, PageSize, NP */
 FIELD(CSR_TLBIDX, INDEX, 0, 12)
 FIELD(CSR_TLBIDX, PS, 24, 6)
 FIELD(CSR_TLBIDX, NE, 31, 1)
+
+#ifdef TARGET_LOONGARCH32
+#define LOONGARCH_CSR_TLBEHI         0x11 /* TLB EntryHi */
+FIELD(CSR_TLBEHI, VPPN, 13, 19)
+
+#define LOONGARCH_CSR_TLBELO0        0x12 /* TLB EntryLo0 */
+#define LOONGARCH_CSR_TLBELO1        0x13 /* TLB EntryLo1 */
+FIELD(TLBENTRY, V, 0, 1)
+FIELD(TLBENTRY, D, 1, 1)
+FIELD(TLBENTRY, PLV, 2, 2)
+FIELD(TLBENTRY, MAT, 4, 2)
+FIELD(TLBENTRY, G, 6, 1)
+FIELD(TLBENTRY, PPN, 8, 24)
+
+#else /* Loongarch64 */
 
 #define LOONGARCH_CSR_TLBEHI         0x11 /* TLB EntryHi */
 FIELD(CSR_TLBEHI, VPPN, 13, 35)
@@ -98,6 +115,8 @@ FIELD(TLBENTRY, PPN, 12, 36)
 FIELD(TLBENTRY, NR, 61, 1)
 FIELD(TLBENTRY, NX, 62, 1)
 FIELD(TLBENTRY, RPLV, 63, 1)
+
+#endif
 
 #define LOONGARCH_CSR_ASID           0x18 /* Address space identifier */
 FIELD(CSR_ASID, ASID, 0, 10)

@@ -157,8 +157,12 @@ extern const char * const fregnames[32];
 
 #define LOONGARCH_STLB         2048 /* 2048 STLB */
 #define LOONGARCH_MTLB         64   /* 64 MTLB */
-#define LOONGARCH_TLB_MAX      (LOONGARCH_STLB + LOONGARCH_MTLB)
 
+#ifdef TARGET_LOONGARCH32
+#define LOONGARCH_TLB_MAX 32
+#else
+#define LOONGARCH_TLB_MAX      (LOONGARCH_STLB + LOONGARCH_MTLB)
+#endif
 /*
  * define the ASID PS E VPPN field of TLB
  */
@@ -177,8 +181,8 @@ typedef struct LoongArchTLB LoongArchTLB;
 
 typedef struct CPULoongArchState CPULoongArchState;
 struct CPULoongArchState {
-    uint64_t gpr[32];
-    uint64_t pc;
+    target_ulong gpr[32];
+    target_ulong pc;
 
     uint64_t fpr[32];
     float_status fp_status;
