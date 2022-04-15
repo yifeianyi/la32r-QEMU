@@ -319,11 +319,11 @@ const void *HELPER(lookup_tb_ptr)(CPUArchState *env)
     cpu_get_tb_cpu_state(env, &pc, &cs_base, &flags);
 
     cflags = curr_cflags(cpu);
+    tb = tb_lookup(cpu, pc, cs_base, flags, cflags);
     if (check_for_breakpoints(cpu, pc, &cflags)) {
         cpu_loop_exit(cpu);
     }
 
-    tb = tb_lookup(cpu, pc, cs_base, flags, cflags);
     if (tb == NULL) {
         return tcg_code_gen_epilogue;
     }
@@ -967,11 +967,11 @@ int cpu_exec(CPUState *cpu)
                 cpu->cflags_next_tb = -1;
             }
 
+            tb = tb_lookup(cpu, pc, cs_base, flags, cflags);
             if (check_for_breakpoints(cpu, pc, &cflags)) {
                 break;
             }
 
-            tb = tb_lookup(cpu, pc, cs_base, flags, cflags);
             if (tb == NULL) {
                 mmap_lock();
                 tb = tb_gen_code(cpu, pc, cs_base, flags, cflags);
