@@ -290,7 +290,7 @@ static void loongarch_cpu_do_interrupt(CPUState *cs)
                       env->CSR_BADV,
                       env->CSR_BADI, env->gpr[11],
                       cs->cpu_index,
-                      env->CSR_ASID);
+                      env->CSR_ASID & 0x2ff );
 #else
         qemu_log_mask(CPU_LOG_INT,
                       "%s: PC " TARGET_FMT_lx " ERA " TARGET_FMT_lx
@@ -372,6 +372,21 @@ static bool loongarch_cpu_has_work(CPUState *cs)
     return has_work;
 #endif
 }
+static void loongarch32_initfn(Object *obj)
+{
+    LoongArchCPU *cpu = LOONGARCH_CPU(obj);
+    CPULoongArchState *env = &cpu->env;
+    int i;
+
+    for (i = 0; i < 21; i++) {
+        env->cpucfg[i] = 0x0;
+    }
+
+    cpu->dtb_compatible = "loongarch,Loongson-3A5000";
+
+    env->CSR_ASID = FIELD_DP64(0, CSR_ASID, ASIDBITS, 0xa);
+}
+
 
 static void loongarch_3a5000_initfn(Object *obj)
 {
@@ -715,7 +730,7 @@ static const TypeInfo loongarch_cpu_type_infos[] = {
          .class_init = loongarch_cpu_class_init,
      },
      DEFINE_LOONGARCH_CPU_TYPE("Loongson-3A5000", loongarch_3a5000_initfn),
-     DEFINE_LOONGARCH_CPU_TYPE("la32", loongarch_3a5000_initfn),
+     DEFINE_LOONGARCH_CPU_TYPE("la32", loongarch32_initfn),
  };
 DEFINE_TYPES(loongarch_cpu_type_infos)
 

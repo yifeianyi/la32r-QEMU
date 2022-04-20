@@ -163,14 +163,21 @@ extern const char * const fregnames[32];
 #else
 #define LOONGARCH_TLB_MAX      (LOONGARCH_STLB + LOONGARCH_MTLB)
 #endif
+
+#ifdef TARGET_LOONGARCH32
 /*
  * define the ASID PS E VPPN field of TLB
  */
 FIELD(TLB_MISC, E, 0, 1)
 FIELD(TLB_MISC, ASID, 1, 10)
+FIELD(TLB_MISC, VPPN, 13, 19)
+FIELD(TLB_MISC, PS, 48, 6)
+#else
+FIELD(TLB_MISC, E, 0, 1)
+FIELD(TLB_MISC, ASID, 1, 10)
 FIELD(TLB_MISC, VPPN, 13, 35)
 FIELD(TLB_MISC, PS, 48, 6)
-
+#endif
 struct LoongArchTLB {
     uint64_t tlb_misc;
     /* Fields corresponding to CSR_TLBELO0/1 */
