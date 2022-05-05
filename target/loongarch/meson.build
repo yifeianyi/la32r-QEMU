@@ -25,8 +25,7 @@ loongarch_softmmu_ss.add(files(
 
 
 
-loongarch_softmmu_ss.add(when :'CONFIG_LOONGARCH32' , if_ture:files('tlb_helper32.c'))
-loongarch_softmmu_ss.add(when :'CONFIG_LOONGARCH32' , if_false:files('tlb_helper32.c'))
+loongarch_softmmu_ss.add(files('tlb_helper32.c'))
 
 
 loongarch_ss.add_all(when: 'CONFIG_TCG', if_true: [loongarch_tcg_ss])
