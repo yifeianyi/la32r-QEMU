@@ -703,7 +703,7 @@ static void loongarch_cpu_class_init(ObjectClass *c, void *data)
 #ifdef TARGET_LOONGARCH32
     cc->gdb_core_xml_file = "loongarch-base32.xml";
     cc->gdb_stop_before_watchpoint = true;
-    cc->gdb_num_core_regs = 34;
+    cc->gdb_num_core_regs = 45;
     cc->gdb_read_register = loongarch_cpu_gdb_read_register;
     cc->gdb_write_register = loongarch_cpu_gdb_write_register;
     cc->gdb_stop_before_watchpoint = true;

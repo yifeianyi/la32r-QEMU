@@ -90,6 +90,22 @@ static void gen_sltu(TCGv dest, TCGv src1, TCGv src2)
     tcg_gen_setcond_tl(TCG_COND_LTU, dest, src1, src2);
 }
 
+#ifdef TARGET_LOONGARCH32
+static void gen_mulh_wu(TCGv dest, TCGv src1, TCGv src2)
+{
+    TCGv_i32 t2 = tcg_temp_new_i32();
+    TCGv_i32 t3 = tcg_temp_new_i32();
+    tcg_gen_trunc_tl_i32(t2, src1);
+    tcg_gen_trunc_tl_i32(t3, src2);
+    tcg_gen_mulu2_i32(t2, t3, t2, t3);
+    tcg_gen_ext_i32_tl(dest, t3);
+    tcg_temp_free_i32(t2);
+    tcg_temp_free_i32(t3);
+}
+#else
+#define gen_mulh_wu gen_mulh_w
+#endif
+
 static void gen_mulh_w(TCGv dest, TCGv src1, TCGv src2)
 {
 #ifdef TARGET_LOONGARCH32
@@ -97,7 +113,7 @@ static void gen_mulh_w(TCGv dest, TCGv src1, TCGv src2)
     TCGv_i32 t3 = tcg_temp_new_i32();
     tcg_gen_trunc_tl_i32(t2, src1);
     tcg_gen_trunc_tl_i32(t3, src2);
-    tcg_gen_mulu2_i32(t2, t3, t2, t3);
+    tcg_gen_muls2_i32(t2, t3, t2, t3);
     tcg_gen_ext_i32_tl(dest, t3);
     tcg_temp_free_i32(t2);
     tcg_temp_free_i32(t3);
@@ -286,7 +302,7 @@ TRANS(sltu, gen_rrr, EXT_NONE, EXT_NONE, EXT_NONE, gen_sltu)
 TRANS(mul_w, gen_rrr, EXT_SIGN, EXT_SIGN, EXT_SIGN, tcg_gen_mul_tl)
 TRANS(mul_d, gen_rrr, EXT_NONE, EXT_NONE, EXT_NONE, tcg_gen_mul_tl)
 TRANS(mulh_w, gen_rrr, EXT_SIGN, EXT_SIGN, EXT_NONE, gen_mulh_w)
-TRANS(mulh_wu, gen_rrr, EXT_ZERO, EXT_ZERO, EXT_NONE, gen_mulh_w)
+TRANS(mulh_wu, gen_rrr, EXT_ZERO, EXT_ZERO, EXT_NONE, gen_mulh_wu)
 TRANS(mulh_d, gen_rrr, EXT_NONE, EXT_NONE, EXT_NONE, gen_mulh_d)
 TRANS(mulh_du, gen_rrr, EXT_NONE, EXT_NONE, EXT_NONE, gen_mulh_du)
 TRANS(mulw_d_w, gen_rrr, EXT_SIGN, EXT_SIGN, EXT_NONE, tcg_gen_mul_tl)

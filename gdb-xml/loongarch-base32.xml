@@ -41,4 +41,16 @@
   <reg name="r31" bitsize="32" type="uint32" group="general"/>
   <reg name="pc" bitsize="32" type="code_ptr" group="general"/>
   <reg name="badvaddr" bitsize="32" type="code_ptr" group="general"/>
+  <reg name="csr.crmd" bitsize="32" type="code_ptr" group="general"/>
+  <reg name="csr.ecfg" bitsize="32" type="code_ptr" group="general"/>
+  <reg name="csr.estat" bitsize="32" type="code_ptr" group="general"/>
+  <reg name="csr.era" bitsize="32" type="code_ptr" group="general"/>  
+  <reg name="csr.badv" bitsize="32" type="code_ptr" group="general"/>
+  <reg name="csr.badi" bitsize="32" type="code_ptr" group="general"/>
+  <reg name="csr.eentry" bitsize="32" type="code_ptr" group="general"/>
+  <reg name="csr.tlbrentry" bitsize="32" type="code_ptr" group="general"/>
+  <reg name="csr.tlbrbadv" bitsize="32" type="code_ptr" group="general"/>
+  <reg name="csr.tlbrera" bitsize="32" type="code_ptr" group="general"/>
+  <reg name="csr.dmw0" bitsize="32" type="code_ptr" group="general"/>
+  <reg name="csr.dmw1" bitsize="32" type="code_ptr" group="general"/>
 </feature>

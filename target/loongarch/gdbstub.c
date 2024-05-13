@@ -24,6 +24,30 @@ int loongarch_cpu_gdb_read_register(CPUState *cs, GByteArray *mem_buf, int n)
         return gdb_get_regl(mem_buf, env->pc);
     } else if (n == 33) {
         return gdb_get_regl(mem_buf, env->badaddr);
+    } else if (n == 34) {
+        return gdb_get_regl(mem_buf, env->CSR_CRMD);
+    } else if (n == 35) {
+        return gdb_get_regl(mem_buf, env->CSR_ECFG);
+    } else if (n == 36) {
+        return gdb_get_regl(mem_buf, env->CSR_ESTAT);
+    } else if (n == 37) {
+        return gdb_get_regl(mem_buf, env->CSR_ERA);
+    } else if (n == 38) {
+        return gdb_get_regl(mem_buf, env->CSR_BADV);
+    } else if (n == 39) {
+        return gdb_get_regl(mem_buf, env->CSR_BADI);
+    } else if (n == 40) {
+        return gdb_get_regl(mem_buf, env->CSR_EENTRY);
+    } else if (n == 41) {
+        return gdb_get_regl(mem_buf, env->CSR_TLBRENTRY);
+    } else if (n == 42) {
+        return gdb_get_regl(mem_buf, env->CSR_TLBRBADV);
+    } else if (n == 43) {
+        return gdb_get_regl(mem_buf, env->CSR_TLBRERA);
+    } else if (n == 44) {
+        return gdb_get_regl(mem_buf, env->CSR_DMW[0]);
+    } else if (n == 45) {
+        return gdb_get_regl(mem_buf, env->CSR_DMW[1]);
     }
     return 0;
 }
@@ -38,6 +62,30 @@ int loongarch_cpu_gdb_write_register(CPUState *cs, uint8_t *mem_buf, int n)
         return env->gpr[n] = tmp, sizeof(target_ulong);
     } else if (n == 32) {
         return env->pc = tmp, sizeof(target_ulong);
+    }else if (n == 34) {
+        return env->CSR_CRMD, sizeof(target_ulong);
+    } else if (n == 35) {
+        return gdb_get_regl(mem_buf, env->CSR_ECFG);
+    } else if (n == 36) {
+        return gdb_get_regl(mem_buf, env->CSR_ESTAT);
+    } else if (n == 37) {
+        return gdb_get_regl(mem_buf, env->CSR_ERA);
+    } else if (n == 38) {
+        return gdb_get_regl(mem_buf, env->CSR_BADV);
+    } else if (n == 39) {
+        return gdb_get_regl(mem_buf, env->CSR_BADI);
+    } else if (n == 40) {
+        return gdb_get_regl(mem_buf, env->CSR_EENTRY);
+    } else if (n == 41) {
+        return gdb_get_regl(mem_buf, env->CSR_TLBRENTRY);
+    } else if (n == 42) {
+        return gdb_get_regl(mem_buf, env->CSR_TLBRBADV);
+    } else if (n == 43) {
+        return gdb_get_regl(mem_buf, env->CSR_TLBRERA);
+    } else if (n == 44) {
+        return gdb_get_regl(mem_buf, env->CSR_DMW[0]);
+    } else if (n == 45) {
+        return gdb_get_regl(mem_buf, env->CSR_DMW[1]);
     }
     return 0;
 }
